@@ -1,38 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import '../widgets/products/price_tag.dart';
+import '../widgets/ui_elements/title_default.dart';
+import '../models/product.dart';
 
 class ProductPage extends StatelessWidget {
-  final String title;
-  final String imageUrl;
-
-  ProductPage(this.title, this.imageUrl);
-
-  _showWarningDialogue(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Are you sure?'),
-            content: Text('This action cannot be undone.'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Discard'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              FlatButton(
-                child: Text('Delete'),
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context, true);
-                },
-              ),
-            ],
-          );
-        });
-  }
-
+  final Product product;
+  ProductPage(this.product);
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -43,24 +17,27 @@ class ProductPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(title),
+          title: Text(product.title),
         ),
         body: Column(
           //mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset(imageUrl),
+            Image.asset(product.image),
             Container(
-              padding: EdgeInsets.all(10.0),
-              child: Text(title),
+              padding: EdgeInsets.only(top: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TitleDefault(product.title),
+                  SizedBox(width: 8.0),
+                  PriceTag(product.price.toString()),
+                ],
+              ),
             ),
             Container(
               padding: EdgeInsets.all(10.0),
-              child: RaisedButton(
-                color: Theme.of(context).accentColor,
-                child: Text('DELETE'),
-                onPressed: () => _showWarningDialogue(context),
-              ),
+              child: Text(product.description),
             ),
           ],
         ),

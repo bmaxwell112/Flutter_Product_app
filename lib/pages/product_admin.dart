@@ -1,35 +1,43 @@
+import 'package:first_app/scoped_models/main.dart';
 import 'package:flutter/material.dart';
 
-import './product_create.dart';
+import './product_edit.dart';
 import './Product_list.dart';
+import '../widgets/ui_elements/logout_list_tile.dart';
 
 class ProductsAdminPage extends StatelessWidget {
-  final Function addProduct;
-  final Function deleteProduct;
+  final MainModel model;
 
-  ProductsAdminPage(this.addProduct, this.deleteProduct);
+  ProductsAdminPage(this.model);
+
+  Widget _buildSideDrawer(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: <Widget>[
+          AppBar(
+            automaticallyImplyLeading: false,
+            title: Text('Choose'),
+          ),
+          ListTile(
+            leading: Icon(Icons.shop),
+            title: Text('View Products'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/');
+            },
+          ),
+          Divider(),
+          LogoutListTile(),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        drawer: Drawer(
-          child: Column(
-            children: <Widget>[
-              AppBar(
-                automaticallyImplyLeading: false,
-                title: Text('Choose'),
-              ),
-              ListTile(
-                title: Text('View Products'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/');
-                },
-              )
-            ],
-          ),
-        ),
+        drawer: _buildSideDrawer(context),
         appBar: AppBar(
             title: Text('Manage Products'),
             bottom: TabBar(
@@ -44,10 +52,12 @@ class ProductsAdminPage extends StatelessWidget {
                 ),
               ],
             )),
-        body: TabBarView(children: <Widget>[
-          ProductCreatePage(addProduct),
-          ProductListPage(),
-        ],),
+        body: TabBarView(
+          children: <Widget>[
+            ProductEditPage(),
+            ProductListPage(model),
+          ],
+        ),
       ),
     );
   }
